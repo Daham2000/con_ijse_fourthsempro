@@ -9,6 +9,7 @@ tags:
 - name: "Authentication"
 
 paths:
+  # User login
   /auth/login:
     get:
       tags:
@@ -47,6 +48,7 @@ paths:
                     type: string
                     description: The user login token.
 
+  # Register user
   /users/register:
     post:
       tags:
@@ -116,8 +118,74 @@ paths:
           description: A JSON array of user posts
           content:
             application/json:
-              schema: 
+              schema:
                 type: array
-                items: 
-                  type: string
-    
+                items : 
+                  type: object
+                  properties:
+                    uid:
+                      type: string
+                      description: The user's uid.
+                    Title:
+                      type: string
+                      description: Post title.
+                    Country:
+                      type: string
+                      description: Travel place's country.
+                    City:
+                      type: string
+                      description: Travel place's city.
+                    Province:
+                      type: string
+                      description: Travel place's province.
+                    Images:
+                      type: array
+                      description: Travel place's images.
+                      items : 
+                        type: string
+                
+  # Create a post
+  /admin/posts/:
+    post:
+      tags:
+      - "Posts"
+      summary: Create a travel posts from here.
+      description: To create a post use following credentials.
+      requestBody:
+        required: true
+        content:
+         application/json:
+              schema:
+                type: object
+                properties:
+                  uid:
+                    type: string
+                    description: The user's uid.
+                  Title:
+                    type: string
+                    description: Post title.
+                  Country:
+                    type: string
+                    description: Travel place's country.
+                  City:
+                    type: string
+                    description: Travel place's city.
+                  Province:
+                    type: string
+                    description: Travel place's province.
+                  Images:
+                      type: array
+                      description: Travel place's images.
+                      items : 
+                        type: string
+      responses:
+        '201':    # status code
+          description: A JSON array of user posts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: string
+                    description: The user ID.
