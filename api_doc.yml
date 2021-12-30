@@ -123,21 +123,26 @@ paths:
                 items : 
                   type: object
                   properties:
-                    uid:
+                    Description:
                       type: string
                       description: The user's uid.
-                    Title:
+                    District:
                       type: string
                       description: Post title.
-                    Country:
-                      type: string
-                      description: Travel place's country.
-                    City:
-                      type: string
+                    LatLng:
+                      type: array
                       description: Travel place's city.
-                    Province:
+                      items : 
+                        type: string
+                    Short Detail:
                       type: string
                       description: Travel place's province.
+                    Title:
+                      type: string
+                      description: Travel place's province.
+                    youtubeID:
+                      type: string
+                      description: youtube Video id
                     Images:
                       type: array
                       description: Travel place's images.
