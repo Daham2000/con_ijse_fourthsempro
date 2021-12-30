@@ -6,6 +6,8 @@ from werkzeug.utils import secure_filename
 from application.model.attraction import Attraction
 import firebase_admin
 
+from application.model.user import User
+
 cred = credentials.Certificate("private/key.json")
 firebase_admin.initialize_app(cred,{'storageBucket': "travel-app-12783.appspot.com"})
 db = firestore.client()
@@ -13,6 +15,21 @@ db = firestore.client()
 @app.route("/")
 def index():
     return "Welcome to MAYTH server."
+
+@app.route("/users/register", methods=['POST'])
+def register():
+    email = request.form['email']
+    password = request.form['password']
+    firstName = request.form['firstName']
+    lastName = request.form['lastName']
+    user = User()
+    user.db = db
+    user.email = email
+    user.password = password
+    user.firstName = firstName
+    user.lastName = lastName
+    res = user.registerUser()
+    return res
 
 @app.route("/posts")
 def posts():

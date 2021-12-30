@@ -44,9 +44,15 @@ paths:
                   email:
                     type: string
                     description: User name.
-                  torknID:
+                  firstname:
                     type: string
-                    description: The user login token.
+                    description: The user's first name.
+                  lastname:
+                    type: string
+                    description: The user's last name.
+                  lastLogin:
+                    type: string
+                    description: The user's last login time.
 
   # Register user
   /users/register:
@@ -89,9 +95,15 @@ paths:
                   email:
                     type: string
                     description: User name.
-                  torknID:
+                  firstname:
                     type: string
-                    description: The user login token.
+                    description: The user's first name.
+                  lastname:
+                    type: string
+                    description: The user's last name.
+                  lastLogin:
+                    type: string
+                    description: The user's last login time.
 
   # Get all posts      
   /posts/:

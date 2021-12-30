@@ -1,5 +1,4 @@
-from firebase_admin import firestore,storage
-db = ''
+from firebase_admin import storage
 
 class Attraction:
     def __init__(self):
