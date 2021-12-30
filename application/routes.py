@@ -8,8 +8,8 @@ import firebase_admin
 
 @app.route("/")
 def index():
-    j = get_attraction()
-    return make_response(jsonify(j), 200)
+    responce = get_attraction()
+    return make_response(responce, 200)
 
 @app.route('/', methods=['POST'])
 def my_form_post():
@@ -25,6 +25,9 @@ attractions = db.collection(u'attraction').stream()
 print(attractions)
 
 def get_attraction():
+    list = []
     for doc in attractions:
-        print(type(doc.to_dict()))
-    return "attractions"
+        list.append(doc.to_dict())
+    jsonStr = json.dumps(list)
+    print(jsonStr)
+    return jsonStr
