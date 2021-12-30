@@ -150,7 +150,7 @@ paths:
                         type: string
                 
   # Create a post
-  /admin/posts/:
+  /admin/post/:
     post:
       tags:
       - "Posts"
@@ -159,26 +159,31 @@ paths:
       requestBody:
         required: true
         content:
-         application/json:
+         application/from-data:
               schema:
                 type: object
                 properties:
-                  uid:
-                    type: string
-                    description: The user's uid.
-                  Title:
-                    type: string
-                    description: Post title.
-                  Country:
-                    type: string
-                    description: Travel place's country.
-                  City:
-                    type: string
-                    description: Travel place's city.
-                  Province:
-                    type: string
-                    description: Travel place's province.
-                  Images:
+                    Description:
+                      type: string
+                      description: The user's uid.
+                    District:
+                      type: string
+                      description: Post title.
+                    LatLng:
+                      type: array
+                      description: Travel place's city.
+                      items : 
+                        type: string
+                    Short Detail:
+                      type: string
+                      description: Travel place's province.
+                    Title:
+                      type: string
+                      description: Travel place's province.
+                    youtubeID:
+                      type: string
+                      description: youtube Video id
+                    Images:
                       type: array
                       description: Travel place's images.
                       items : 
@@ -189,8 +194,32 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: string
-                    description: The user ID.
+                type: array
+                items : 
+                  type: object
+                  properties:
+                    Description:
+                      type: string
+                      description: The user's uid.
+                    District:
+                      type: string
+                      description: Post title.
+                    LatLng:
+                      type: array
+                      description: Travel place's city.
+                      items : 
+                        type: string
+                    Short Detail:
+                      type: string
+                      description: Travel place's province.
+                    Title:
+                      type: string
+                      description: Travel place's province.
+                    youtubeID:
+                      type: string
+                      description: youtube Video id
+                    Images:
+                      type: array
+                      description: Travel place's images.
+                      items : 
+                        type: string
