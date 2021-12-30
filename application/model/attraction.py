@@ -1,4 +1,6 @@
 from firebase_admin import storage
+from firebase_admin.exceptions import FirebaseError
+from flask import jsonify,make_response
 
 class Attraction:
     def __init__(self):
@@ -30,20 +32,23 @@ class Attraction:
             print(fileName)
             bucket = storage.bucket()
             blob = bucket.blob(fileName)
-            blob.upload_from_filename(fileName)
+            blob.upload_from_string(fileName)
             blob.make_public()
             images.append(blob.public_url)
             print("your file url", blob.public_url)
+        
+        try:
+            data = {
+            'Description': self.description,
+            'District': self.district,
+            'ShortDetail': self.shortDetail,
+            'Title': self.title,
+            'youtubeID': self.youtubeID,
+            'LatLng': self.latLng,
+            'Images': images,
+            }
+            responce = attractions_ref.document(self.title).set(data)
+        except FirebaseError as e:
+            return make_response(jsonify(str(e)),422)
 
-        data = {
-        'Description': self.description,
-        'District': self.district,
-        'ShortDetail': self.shortDetail,
-        'Title': self.title,
-        'youtubeID': self.youtubeID,
-        'LatLng': self.latLng,
-        'Images': images,
-        }
-        responce = attractions_ref.document(self.title).set(data)
-        print(responce)
-        return responce
+        return make_response(jsonify(str("Post created...")),201)

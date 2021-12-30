@@ -24,11 +24,11 @@ paths:
           required: true
           description: User email
         - in: query
-          name: password
+          name: loginTime
           schema:
             type: string
           required: true
-          description: User password
+          description: User Login time
 
       responses:
         '200':    # status code

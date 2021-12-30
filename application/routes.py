@@ -1,5 +1,5 @@
 from application import app
-from flask import jsonify,request
+from flask import jsonify,request,make_response
 from firebase_admin import firestore,storage
 from firebase_admin import credentials
 from werkzeug.utils import secure_filename
@@ -15,6 +15,18 @@ db = firestore.client()
 @app.route("/")
 def index():
     return "Welcome to MAYTH server."
+
+@app.route("/auth/login", methods=['GET'])
+def login():
+    loginTime = request.args.get('loginTime')
+    user = User()
+    user.db = db
+    user.loginTime = loginTime
+    bearer = request.headers.get('Authorization')
+    token = bearer.split()[1] 
+    user.idToken = token
+    res = user.loginUser()
+    return res
 
 @app.route("/users/register", methods=['POST'])
 def register():
@@ -51,19 +63,14 @@ def my_form_post():
     attraction = Attraction()
     attraction.db = db
     if 'images' not in request.files:
-            return "No images are added..."
-    if 'images' in request.files:
-        images = request.files.getlist('images')
-        index=0
-        for i in images:
-            images[index].save(secure_filename(i.filename))
-            index = index+1
-        attraction.images = images
+            return make_response("Images field can't be empty...",404)
+    images = request.files.getlist('images')
+    attraction.images = images
     attraction.title = title
     attraction.district = district
     attraction.latLng = latLng
     attraction.shortDetail = shortDetail
     attraction.youtubeID = youtubeID
     attraction.description = description
-    attraction.save_attraction()
-    return "Hello post reuqest"
+    res = attraction.save_attraction()
+    return res

@@ -5,7 +5,20 @@ from flask import jsonify,make_response
 class User:
     def __init__(self):
         print("__init__")
-    
+
+    def loginUser(self):
+        db = self.db
+        idToken = self.idToken
+        loginTime = self.loginTime
+        try:
+            decoded_token = auth.verify_id_token(idToken)
+            uid = decoded_token['uid']
+            print(uid)
+            return make_response(jsonify(uid),200)
+        except FirebaseError as e:
+            print(e)
+            return make_response(jsonify(str("Invalid id token")),401)
+
     def registerUser(self):
         db = self.db
         users_ref = db.collection(u'users')
