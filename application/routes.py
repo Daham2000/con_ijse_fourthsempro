@@ -54,10 +54,12 @@ def register():
 def posts():
     limit = request.args.get('limit')
     page = request.args.get('page')
+    query = request.args.get('query')
     attraction = Attraction()
     attraction.db = db
+    attraction.query = query
     responce = attraction.get_attraction(int(limit),int(page))
-    return jsonify(responce)
+    return responce
 
 @app.route('/admin/post', methods=['POST'])
 def my_form_post():

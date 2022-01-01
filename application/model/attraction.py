@@ -1,3 +1,4 @@
+from copy import Error
 from firebase_admin import storage
 from firebase_admin.exceptions import FirebaseError
 from flask import jsonify,make_response
@@ -8,20 +9,47 @@ class Attraction:
     
     def get_attraction(self,limit,page):
         db = self.db
+        query = self.query
         attractions_ref = db.collection(u'attraction')
-        attractions = attractions_ref.order_by(u'Title').limit(limit*(page)).stream()
-        list = []
-        for doc in attractions:
-            list.append(doc)
-        last_doc = list[(-limit)]
-        last_pop = last_doc.to_dict()[u'Title']
-        next_query = (attractions_ref.order_by(u'Title').start_at({
-            u'Title': last_pop
-        }).limit(limit)).stream()
-        list = []
-        for doc in next_query:
-            list.append(doc.to_dict())
-        return list
+        try:
+            if query==None:
+                attractions = attractions_ref.order_by('Title').limit(limit*(page)).stream()
+            elif query=="":
+                attractions = attractions_ref.order_by('Title').limit(limit*(page)).stream()
+            else:
+                query = query.strip()
+                try:
+                    attractions = attractions_ref.where("Title", ">=", query).limit(limit*(page)).stream()
+                except FirebaseError as e:
+                    return make_response(jsonify(str(e)),422)
+            list = []
+            for doc in attractions:
+                list.append(doc)
+            totalItems = len(list)
+            totalNeeded = limit*(page-1)
+            print("totalItems: "+""+str(totalItems))
+            print("totalNeeded: "+""+str(totalNeeded))
+
+            if totalItems>totalNeeded:
+                difference = totalItems-totalNeeded
+                print(difference)
+                if difference<limit:
+                    last_doc = list[(-difference)]
+                else:    
+                    last_doc = list[(-limit)]
+                list = []
+                last_pop = last_doc.to_dict()['Title']
+                next_query = (attractions_ref.order_by('Title').start_at({
+                    'Title': last_pop
+                }).limit(limit)).stream()
+                for doc in next_query:
+                    list.append(doc.to_dict())
+            else:
+                list = []
+            return make_response(jsonify({"posts":list}),200)
+            
+        except Error as e:
+            return make_response(jsonify(str(e)),422)
     
     def save_attraction(self):
         db = self.db
