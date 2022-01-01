@@ -1,6 +1,7 @@
 from firebase_admin import auth
 from firebase_admin.exceptions import FirebaseError
 from flask import jsonify,make_response
+from marshmallow import Schema, fields
 
 class User:
     def __init__(self):
@@ -8,13 +9,23 @@ class User:
 
     def loginUser(self):
         db = self.db
+        users_ref = db.collection(u'users')
         idToken = self.idToken
         loginTime = self.loginTime
         try:
             decoded_token = auth.verify_id_token(idToken)
-            uid = decoded_token['uid']
-            print(uid)
-            return make_response(jsonify(uid),200)
+            email = decoded_token['email']
+            data = {
+                'lastLogin': loginTime
+            }
+            new_user_ref = users_ref.document(email)
+            new_user_ref.update(data)
+            user_doc = new_user_ref.get()
+            if user_doc.exists:
+                print(f'Document data: {user_doc.to_dict()}')
+            else:
+                print(u'No such document!')
+            return make_response(jsonify(email),200)
         except FirebaseError as e:
             print(e)
             return make_response(jsonify(str("Invalid id token")),401)
@@ -61,3 +72,6 @@ class User:
             return make_response(jsonify(str(e)),422)
             
         return make_response(jsonify(r),201)
+
+class LoginSchema(Schema):
+    loginTime = fields.String(required=True)

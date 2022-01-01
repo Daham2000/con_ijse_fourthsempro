@@ -5,8 +5,9 @@ from firebase_admin import credentials
 from werkzeug.utils import secure_filename
 from application.model.attraction import Attraction
 import firebase_admin
+from marshmallow import Schema, fields, ValidationError
 
-from application.model.user import User
+from application.model.user import LoginSchema, User
 
 cred = credentials.Certificate("private/key.json")
 firebase_admin.initialize_app(cred,{'storageBucket': "travel-app-12783.appspot.com"})
@@ -18,7 +19,13 @@ def index():
 
 @app.route("/auth/login", methods=['GET'])
 def login():
-    loginTime = request.args.get('loginTime')
+    request_data = request.args
+    schema = LoginSchema()
+    try:
+        result = schema.load(request_data)
+        loginTime = request_data.get('loginTime')
+    except ValidationError as err:
+        return jsonify(err.messages), 400    
     user = User()
     user.db = db
     user.loginTime = loginTime
