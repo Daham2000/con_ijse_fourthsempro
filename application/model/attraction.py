@@ -12,6 +12,7 @@ class Attraction:
         query = self.query
         attractions_ref = db.collection(u'attraction')
         try:
+            totalPosts = attractions_ref.order_by('Title').stream()
             if query==None:
                 attractions = attractions_ref.order_by('Title').limit(limit*(page)).stream()
             elif query=="":
@@ -27,9 +28,12 @@ class Attraction:
                 list.append(doc)
             totalItems = len(list)
             totalNeeded = limit*(page-1)
-            print("totalItems: "+""+str(totalItems))
-            print("totalNeeded: "+""+str(totalNeeded))
-
+            # get total posts number
+            posts = []
+            for doc in totalPosts:
+                posts.append(doc)
+            numOfTotalPosts = len(posts)
+            
             if totalItems>totalNeeded:
                 difference = totalItems-totalNeeded
                 print(difference)
@@ -46,7 +50,7 @@ class Attraction:
                     list.append(doc.to_dict())
             else:
                 list = []
-            return make_response(jsonify({"posts":list}),200)
+            return make_response(jsonify({"totalItems":numOfTotalPosts,"posts":list}),200)
             
         except Error as e:
             return make_response(jsonify(str(e)),422)
