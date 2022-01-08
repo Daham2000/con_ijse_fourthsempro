@@ -83,8 +83,10 @@ def posts():
 def hotels():
     limit = request.args.get('limit')
     page = request.args.get('page')
+    query = request.args.get('query')
     hotel = Hotel()
     hotel.db = db
+    hotel.query = query
     responce = hotel.get_hotels(int(limit),int(page))
     return responce
 
