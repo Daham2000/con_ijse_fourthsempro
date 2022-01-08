@@ -241,3 +241,66 @@ paths:
                       description: Travel place's images.
                       items : 
                         type: string
+
+  # Create a post
+  /admin/hotel/:
+    post:
+      tags:
+      - "Hotel"
+      summary: Create a hotel posts from here.
+      description: To create a post use following credentials.
+      requestBody:
+        required: true
+        content:
+         application/from-data:
+              schema:
+                type: object
+                properties:
+                    description:
+                      type: string
+                      description: The user's uid.
+                    district:
+                      type: string
+                      description: Post district.
+                    title:
+                      type: string
+                      description: Travel hotel's title.
+                    link:
+                      type: string
+                      description: Travel hotel's web link.
+                    miv:
+                      type: number
+                      description: Travel hotel's miv value.
+                    rate:
+                      type: number
+                      description: Travel hotel's rate number from 10.
+                    images:
+                      type: array
+                      description: Travel hotel's images.
+                      items : 
+                        type: string
+      responses:
+        '201':    # status code
+          description: A JSON array of user posts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    description:
+                      type: string
+                      description: The user's uid.
+                    district:
+                      type: string
+                      description: Post district.
+                    title:
+                      type: string
+                      description: Travel hotel's title.
+                    link:
+                      type: string
+                      description: Travel hotel's web link.
+                    images:
+                      type: array
+                      description: Travel hotel's images.
+                      items : 
+                        type: string

@@ -1,4 +1,4 @@
-from application import app
+from application import application
 from flask import jsonify,request,make_response
 from firebase_admin import firestore,storage
 from firebase_admin import credentials
@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 from application.model.attraction import Attraction
 import firebase_admin
 from marshmallow import Schema, fields, ValidationError
+from application.model.hotel import Hotel
 
 from application.model.user import LoginSchema, User
 
@@ -13,11 +14,11 @@ cred = credentials.Certificate("private/key.json")
 firebase_admin.initialize_app(cred,{'storageBucket': "travel-app-12783.appspot.com"})
 db = firestore.client()
 
-@app.route("/")
+@application.route("/")
 def index():
     return "Welcome to MAYTH server."
 
-@app.route("/auth/login", methods=['GET'])
+@application.route("/auth/login", methods=['GET'])
 def login():
     request_data = request.args
     schema = LoginSchema()
@@ -35,7 +36,7 @@ def login():
     res = user.loginUser()
     return res
 
-@app.route("/users/register", methods=['POST'])
+@application.route("/users/register", methods=['POST'])
 def register():
     email = request.form['email']
     password = request.form['password']
@@ -50,7 +51,7 @@ def register():
     res = user.registerUser()
     return res
 
-@app.route("/posts")
+@application.route("/posts")
 def posts():
     limit = request.args.get('limit')
     page = request.args.get('page')
@@ -61,7 +62,16 @@ def posts():
     responce = attraction.get_attraction(int(limit),int(page))
     return responce
 
-@app.route('/admin/post', methods=['POST'])
+@application.route("/hotels")
+def hotels():
+    limit = request.args.get('limit')
+    page = request.args.get('page')
+    hotel = Hotel()
+    hotel.db = db
+    responce = hotel.get_hotels(int(limit),int(page))
+    return responce
+
+@application.route('/admin/post', methods=['POST'])
 def my_form_post():
     title = request.form['title']
     district = request.form['district']
@@ -82,4 +92,27 @@ def my_form_post():
     attraction.youtubeID = youtubeID
     attraction.description = description
     res = attraction.save_attraction()
+    return res
+
+@application.route('/admin/hotel', methods=['POST'])
+def add_hotel():
+    title = request.form['title']
+    district = request.form['district']
+    link = request.form['link']
+    description = request.form['description']
+    miv = request.form['miv']
+    rate = request.form['rate']
+    hotel = Hotel()
+    hotel.db = db
+    hotel.rate = rate
+    hotel.miv = miv
+    if 'images' not in request.files:
+            return make_response("Images field can't be empty...",404)
+    images = request.files.getlist('images')
+    hotel.images = images
+    hotel.title = title
+    hotel.district = district
+    hotel.link = link
+    hotel.description = description
+    res = hotel.save_hotel()
     return res
