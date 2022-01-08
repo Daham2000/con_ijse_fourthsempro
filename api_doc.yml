@@ -337,24 +337,30 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items : 
-                  type: object
-                  properties:
-                      description:
-                        type: string
-                        description: The user's uid.
-                      district:
-                        type: string
-                        description: Post district.
-                      title:
-                        type: string
-                        description: Travel hotel's title.
-                      link:
-                        type: string
-                        description: Travel hotel's web link.
-                      images:
-                        type: array
-                        description: Travel hotel's images.
-                        items : 
-                          type: string
+                type: object
+                properties:
+                  totalItems:
+                    type: number
+                    description: Total number of posts
+                  hotels:
+                    type: array
+                    items : 
+                      type: object
+                      properties:
+                          description:
+                            type: string
+                            description: The user's uid.
+                          district:
+                            type: string
+                            description: Post district.
+                          title:
+                            type: string
+                            description: Travel hotel's title.
+                          link:
+                            type: string
+                            description: Travel hotel's web link.
+                          images:
+                            type: array
+                            description: Travel hotel's images.
+                            items : 
+                              type: string
