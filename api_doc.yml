@@ -268,6 +268,12 @@ paths:
                     link:
                       type: string
                       description: Travel hotel's web link.
+                    miv:
+                      type: number
+                      description: Travel hotel's miv value.
+                    rate:
+                      type: number
+                      description: Travel hotel's rate number from 10.
                     images:
                       type: array
                       description: Travel hotel's images.
