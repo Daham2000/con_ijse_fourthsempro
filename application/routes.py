@@ -8,7 +8,7 @@ import firebase_admin
 from marshmallow import Schema, fields, ValidationError
 from application.model.hotel import Hotel
 
-from application.model.user import LoginSchema, User
+from application.model.user import LoginSchema, User, UserMIVSchema
 
 cred = credentials.Certificate("private/key.json")
 firebase_admin.initialize_app(cred,{'storageBucket': "travel-app-12783.appspot.com"})
@@ -34,6 +34,23 @@ def login():
     token = bearer.split()[1] 
     user.idToken = token
     res = user.loginUser()
+    return res
+
+@application.route("/user/miv", methods=['PATCH'])
+def updateMivUser():
+    request_data = request.form
+    schema = UserMIVSchema()
+    try:
+        schema.load(request_data)
+        email = request.form['email']
+        miv = request.form['miv']
+    except ValidationError as err:
+        return jsonify(err.messages), 400    
+    user = User()
+    user.db = db
+    user.email = email
+    user.miv = miv
+    res = user.updateUser()
     return res
 
 @application.route("/users/register", methods=['POST'])
