@@ -60,20 +60,20 @@ class Attraction:
             print(fileName)
             bucket = storage.bucket()
             blob = bucket.blob(fileName)
-            blob.upload_from_string(fileName)
+            blob.upload_from_file(i)
             blob.make_public()
             images.append(blob.public_url)
             print("your file url", blob.public_url)
         
         try:
             data = {
-            'Description': self.description,
-            'District': self.district,
-            'ShortDetail': self.shortDetail,
-            'Title': self.title,
-            'youtubeID': self.youtubeID,
-            'LatLng': self.latLng,
-            'Images': images,
+                'Description': self.description,
+                'District': self.district,
+                'ShortDetail': self.shortDetail,
+                'Title': self.title,
+                'youtubeID': self.youtubeID,
+                'LatLng': self.latLng,
+                'Images': images,
             }
             responce = attractions_ref.document(self.title).set(data)
         except FirebaseError as e:
