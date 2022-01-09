@@ -25,7 +25,7 @@ class User:
                 print(f'Document data: {user_doc.to_dict()}')
             else:
                 print(u'No such document!')
-            return make_response(jsonify(email),200)
+            return make_response(jsonify(user_doc.to_dict()),200)
         except FirebaseError as e:
             print(e)
             return make_response(jsonify(str("Invalid id token")),401)

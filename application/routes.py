@@ -1,14 +1,15 @@
 from application import application
 from flask import jsonify,request,make_response
-from firebase_admin import firestore,storage
+from firebase_admin import firestore
 from firebase_admin import credentials
 from werkzeug.utils import secure_filename
 from application.model.attraction import Attraction
 import firebase_admin
-from marshmallow import Schema, fields, ValidationError
+from marshmallow import ValidationError
 from application.model.hotel import Hotel
 
 from application.model.user import LoginSchema, User, UserMIVSchema
+# from mi_model import predict_model
 
 cred = credentials.Certificate("private/key.json")
 firebase_admin.initialize_app(cred,{'storageBucket': "travel-app-12783.appspot.com"})
@@ -17,6 +18,11 @@ db = firestore.client()
 @application.route("/")
 def index():
     return "Welcome to MAYTH server."
+
+# @application.route("/predict")
+# def predict():
+#     predict = predict_model.make_prediction(10000,4)
+#     return predict
 
 @application.route("/auth/login", methods=['GET'])
 def login():
