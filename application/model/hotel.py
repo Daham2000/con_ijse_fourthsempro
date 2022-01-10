@@ -41,16 +41,26 @@ class Hotel:
 
     def get_hotels(self,limit,page):
         db = self.db
-        attractions_ref = db.collection(u'hotels')
+        query = self.query
+        hotels_ref = db.collection(u'hotels')
         try:
-            totalPosts = attractions_ref.order_by('title').stream()
-            hotels = attractions_ref.order_by('title').limit(limit*(page)).stream()
+            totalPosts = hotels_ref.order_by('title').stream()
+            if query==None:
+                hotels = hotels_ref.order_by('title').limit(limit*(page)).stream()
+            elif query=="":
+                hotels = hotels_ref.order_by('title').limit(limit*(page)).stream()
+            else:
+                query = query.strip()
+                try:
+                    hotels = hotels_ref.where("miv", "==", float(query)).limit(limit*(page)).stream()
+                except FirebaseError as e:
+                    return make_response(jsonify(str(e)),422)
             list = []
             for doc in hotels:
                 list.append(doc)
             totalItems = len(list)
             totalNeeded = limit*(page-1)
-            # get total hotels number
+            # get total posts number
             posts = []
             for doc in totalPosts:
                 posts.append(doc)
@@ -65,7 +75,7 @@ class Hotel:
                     last_doc = list[(-limit)]
                 list = []
                 last_pop = last_doc.to_dict()['title']
-                next_query = (attractions_ref.order_by('title').start_at({
+                next_query = (hotels_ref.order_by('title').start_at({
                     'title': last_pop
                 }).limit(limit)).stream()
                 for doc in next_query:

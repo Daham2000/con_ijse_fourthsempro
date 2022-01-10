@@ -25,7 +25,7 @@ class User:
                 print(f'Document data: {user_doc.to_dict()}')
             else:
                 print(u'No such document!')
-            return make_response(jsonify(email),200)
+            return make_response(jsonify(user_doc.to_dict()),200)
         except FirebaseError as e:
             print(e)
             return make_response(jsonify(str("Invalid id token")),401)
@@ -73,5 +73,30 @@ class User:
             
         return make_response(jsonify(r),201)
 
+    def updateUser(self):
+        db = self.db
+        users_ref = db.collection(u'users')
+        email = self.email
+        miv = self.miv
+        try:
+            data = {
+                'miv': float(miv)
+            }
+            new_user_ref = users_ref.document(email)
+            new_user_ref.update(data)
+            user_doc = new_user_ref.get()
+            if user_doc.exists:
+                print(f'Document data: {user_doc.to_dict()}')
+            else:
+                print(u'No such document!')
+            return make_response(jsonify(user_doc.to_dict()),200)
+        except FirebaseError as e:
+            print(e)
+            return make_response(jsonify(str("Invalid id token")),401)
+
 class LoginSchema(Schema):
     loginTime = fields.String(required=True)
+
+class UserMIVSchema(Schema):
+    miv = fields.Float(required=True)
+    email = fields.String(required=True)
