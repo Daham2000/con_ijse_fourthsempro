@@ -1,3 +1,4 @@
+import string
 from application import application
 from flask import jsonify,request,make_response
 from firebase_admin import firestore
@@ -7,6 +8,7 @@ from application.model.attraction import Attraction
 import firebase_admin
 from marshmallow import ValidationError
 from application.model.hotel import Hotel
+import pickle
 
 from application.model.user import LoginSchema, User, UserMIVSchema
 # from mi_model import predict_model
@@ -19,15 +21,24 @@ db = firestore.client()
 def index():
     return "Welcome to MAYTH server."
 
-# @application.route("/predict")
-# def predict():
-#     predict = predict_model.make_prediction(10000,4)
-#     return predict
+@application.route("/predict")
+def predict():
+    model=pickle.load(open('application/mayth_model','rb'))
+    predict = model.predict([[5670,5]])
+    number = 0.0
+    for item in predict:
+        number = float(item)
+    return str(number)
 
 @application.route("/auth/login", methods=['GET'])
 def login():
     request_data = request.args
     schema = LoginSchema()
+    model=pickle.load(open('application/mayth_model','rb'))
+    predict = model.predict([[5670,5]])
+    number = 0.0
+    for item in predict:
+        number = float(item)
     try:
         result = schema.load(request_data)
         loginTime = request_data.get('loginTime')
@@ -36,6 +47,7 @@ def login():
     user = User()
     user.db = db
     user.loginTime = loginTime
+    user.number = number
     bearer = request.headers.get('Authorization')
     token = bearer.split()[1] 
     user.idToken = token

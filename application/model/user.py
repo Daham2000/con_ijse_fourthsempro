@@ -16,7 +16,8 @@ class User:
             decoded_token = auth.verify_id_token(idToken)
             email = decoded_token['email']
             data = {
-                'lastLogin': loginTime
+                'lastLogin': loginTime,
+                'miv': self.number
             }
             new_user_ref = users_ref.document(email)
             new_user_ref.update(data)
