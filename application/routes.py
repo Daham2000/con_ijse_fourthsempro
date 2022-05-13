@@ -9,7 +9,7 @@ from marshmallow import ValidationError
 from application.model.hotel import Hotel
 
 from application.model.user import LoginSchema, User, UserMIVSchema
-# from mi_model import predict_model
+from application.mi_model.predict_model import make_prediction
 
 cred = credentials.Certificate("private/key.json")
 firebase_admin.initialize_app(cred,{'storageBucket': "travel-app-12783.appspot.com"})
@@ -19,10 +19,10 @@ db = firestore.client()
 def index():
     return "Welcome to MAYTH server."
 
-# @application.route("/predict")
-# def predict():
-#     predict = predict_model.make_prediction(10000,4)
-#     return predict
+@application.route("/predict")
+def predict():
+    predict = make_prediction(10000,4)
+    return predict
 
 @application.route("/auth/login", methods=['GET'])
 def login():
